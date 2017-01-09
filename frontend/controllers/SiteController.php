@@ -95,9 +95,8 @@ class SiteController extends Controller
     }
     public function actionRemove($filename='')
     {
-       // var_dump('sadas');die();
+
         if(Yii::$app->request->isAjax){
-//            var_dump(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename);die();
             if(file_exists(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename)){
                 @unlink(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename);
                 (new Query())

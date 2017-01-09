@@ -30,15 +30,6 @@ foreach ($all_images as $item):
             <div><button class=" rotate btn btn-block" >Rotate</button></div><br>
             <div><button class=" delete btn btn-block" value="<?php echo htmlspecialchars($variable); ?>">Delete</button></div>
 
-<!--                --><?php //echo Html::a('Delete', ['site/remove','filename'=>$variable],
-//                    [
-//                        'class' => 'btn btn-block',
-//                        'data' => [
-//                            'method' => 'post',
-//                        ],
-//                    ]
-//                    )?>
-<!--            -->
         </td>
         </tr>
     </table>
