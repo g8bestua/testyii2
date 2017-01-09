@@ -1,8 +1,11 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Image;
+use common\models\UploadForm;
 use Yii;
 use yii\base\InvalidParamException;
+use yii\db\Query;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -12,6 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -72,7 +76,40 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new UploadForm();
+        $all_images = Image::find()->all();
+      //  var_dump($all_Images);die();
+        $modeldb = new Image();
+        if (Yii::$app->request->isPost) {
+            $model->imageFile = UploadedFile::getInstances($model, 'imageFile');
+            $images = $model->imageFile;
+            if ($model->upload()) {
+                $modeldb->title = $images[0]->name;
+                $modeldb->path = '/uploads/'. md5(time()).'_'.$images[0]->baseName . '.' . $images[0]->extension;
+                $modeldb->save();
+                $this->redirect('index');
+            }
+        }
+
+        return $this->render('upload', ['model' => $model,'all_images'=> $all_images]);
+    }
+    public function actionRemove($filename='')
+    {
+       // var_dump('sadas');die();
+        if(Yii::$app->request->isAjax){
+//            var_dump(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename);die();
+            if(file_exists(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename)){
+                @unlink(Yii::getAlias('@webroot').DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$filename);
+                (new Query())
+                    ->createCommand()
+                    ->delete('image', ['path' =>'/uploads/'.$filename])
+                    ->execute();
+            }
+        }else{
+            var_dump('Ooopss!');
+        }
+
+
     }
 
     /**
